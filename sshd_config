@@ -1,0 +1,17 @@
+Port 22
+ListenAddress 0.0.0.0
+PermitRootLogin no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PermitEmptyPasswords no
+AuthenticationMethods keyboard-interactive
+UsePAM yes
+AllowTcpForwarding yes
+GatewayPorts no
+X11Forwarding no
+PrintMotd no
+TCPKeepAlive yes
+ClientAliveInterval 10
+ClientAliveCountMax 6
+UseDNS no
+Banner none

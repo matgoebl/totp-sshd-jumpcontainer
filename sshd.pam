@@ -1,0 +1,8 @@
+#%PAM-1.0                                                                                                                                                                                                                                       
+auth            required        pam_env.so
+auth            required        pam_nologin.so  successok
+auth            required        pam_google_authenticator.so       echo_verification_code grace_period=57600 nullok
+auth            required        pam_unix.so      sha512
+account         include         base-account
+password        include         base-password
+session         include         base-session
