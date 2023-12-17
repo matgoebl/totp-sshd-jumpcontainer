@@ -12,6 +12,8 @@ image:
 	docker build --build-arg BUILDTAG=$(BUILDTAG) --build-arg JUMPUSER=$(JUMPUSER) -t $(IMAGE) .
 	docker tag $(IMAGE) $(DOCKER_REGISTRY)/$(IMAGE):$(BUILDTAG)
 	docker push $(DOCKER_REGISTRY)/$(IMAGE):$(BUILDTAG)
+	docker tag $(IMAGE) $(DOCKER_REGISTRY)/$(IMAGE):latest
+	docker push $(DOCKER_REGISTRY)/$(IMAGE):latest
 
 imagerun:
 	docker build -t $(IMAGE) .
