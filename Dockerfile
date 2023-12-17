@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk add --no-cache openssh-server-pam google-authenticator openrc oath-toolkit-oathtool libqrencode-tools
+RUN apk add --no-cache openssh-server-pam google-authenticator openrc oath-toolkit-oathtool libqrencode-tools openssh-client ca-certificates
 
 ARG JUMPUSER=jumper
 ENV JUMPUSER=${JUMPUSER}
