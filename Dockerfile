@@ -1,5 +1,5 @@
 FROM alpine
-RUN apk add --no-cache openssh-server-pam google-authenticator openrc
+RUN apk add --no-cache openssh-server-pam google-authenticator openrc oath-toolkit-oathtool libqrencode-tools
 
 ARG USER=jumper
 ENV USER=${USER}
