@@ -18,3 +18,9 @@ RUN ln -sf /etc/pam.d/sshd.pam /etc/pam.d/sshd
 WORKDIR /tmp
 EXPOSE 22
 CMD ["/entry.sh"]
+
+LABEL org.opencontainers.image.title="TOTP-enabled SSH daemon in a container used as DMZ jump-host" \
+      org.opencontainers.image.source="https://github.com/matgoebl/totp-sshd-jumpcontainer" \
+      org.opencontainers.image.authors="Matthias.Goebl@goebl.net" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.version="${BUILDTAG}"
