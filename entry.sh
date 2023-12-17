@@ -2,35 +2,32 @@
 set -eu
 IFS=$'\n\t'
 
-if [ -z "${USER:-}" ]; then
-    echo "\$USER is missing. exiting."
-    exit 1
+: "${JUMPUSER:=jumper}"
+: "${JUMPHOST:=totp-sshd-jumpcontainer}"
+
+if [ -z "${JUMPPASS:-}" ]; then
+    echo "\$JUMPPASS is not set. generating it."
+    JUMPPASS="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c ${1:-16})"
 fi
 
-if [ -z "${PASS:-}" ]; then
-    echo "\$PASS is not set. generating it."
-    export PASS="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c ${1:-16})"
+if [ -z "${JUMPTOTP:-}" ]; then
+    echo "\$JUMPTOTP is not set. generating it."
+    JUMPTOTP="$(head /dev/urandom | tr -dc A-Z2-7 | head -c ${1:-16})"
 fi
 
-if [ -z "${TOTP:-}" ]; then
-    echo "\$TOTP is not set. generating it."
-    export TOTP="$(head /dev/urandom | tr -dc A-Z2-7 | head -c ${1:-16})"
-fi
-
-HOST="${HOST:-totp-sshd-jumpcontainer}"
-QRURL="otpauth://totp/$HOST:$USER%20$PASS%20`date +%Y-%m-%d`?secret=$TOTP&issuer=$HOST"
-echo "USER: $USER"
-echo "PASS: $PASS"
-echo "TOTP: $TOTP"
-echo "First token: `oathtool --base32 $TOTP --totp`"
+QRURL="otpauth://totp/$JUMPHOST:$JUMPUSER%20$JUMPPASS%20`date +%Y-%m-%d`?secret=$JUMPTOTP&issuer=$JUMPHOST"
+echo "JUMPUSER: $JUMPUSER"
+echo "JUMPPASS: $JUMPPASS"
+echo "JUMPTOTP: $JUMPTOTP"
+echo "First TOTP code: `oathtool --base32 $JUMPTOTP --totp`"
 echo "QR code URL: $QRURL"
 qrencode -t ANSI256 "$QRURL"
 
 /etc/init.d/sshd checkconfig
-echo "$USER:$PASS" | chpasswd
+echo "$JUMPUSER:$JUMPPASS" | chpasswd
 
-cat <<__X__ >/home/$USER/.google_authenticator
-$TOTP
+cat <<__X__ >/home/$JUMPUSER/.google_authenticator
+$JUMPTOTP
 " RATE_LIMIT 3 30
 " DISALLOW_REUSE
 " TOTP_AUTH
