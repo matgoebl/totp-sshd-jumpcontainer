@@ -4,7 +4,7 @@ PermitRootLogin no
 PubkeyAuthentication yes
 AuthorizedKeysFile .ssh/authorized_keys
 PermitEmptyPasswords no
-AuthenticationMethods keyboard-interactive
+AuthenticationMethods any
 UsePAM yes
 AllowTcpForwarding yes
 GatewayPorts no
