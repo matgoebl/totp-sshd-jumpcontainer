@@ -19,6 +19,6 @@ image:
 imagerun:
 	docker build -t $(IMAGE) .
 	-docker stop $(IMAGE)
-	docker run -it -p 2222:22 --name $(IMAGE) --rm -e JUMPUSER=$(JUMPUSER) -e JUMPPASS=$(JUMPPASS) -e JUMPTOTP=$(JUMPTOTP) -e JUMPKEY="$(JUMPKEY)" $(IMAGE)
+	docker run -it -p 2222:2222 --name $(IMAGE) --rm -e JUMPUSER=$(JUMPUSER) -e JUMPPASS=$(JUMPPASS) -e JUMPTOTP=$(JUMPTOTP) -e JUMPKEY="$(JUMPKEY)" $(IMAGE)
 
 .PHONY: all image imagerun

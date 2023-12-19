@@ -1,4 +1,8 @@
-Port 22
+HostKey /user/etc/ssh/ssh_host_rsa_key
+HostKey /user/etc/ssh/ssh_host_ecdsa_key
+HostKey /user/etc/ssh/ssh_host_ed25519_key
+PidFile /user/sshd.pid
+Port 2222
 ListenAddress 0.0.0.0
 PermitRootLogin no
 PubkeyAuthentication yes
