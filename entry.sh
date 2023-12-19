@@ -19,9 +19,16 @@ QRURL="otpauth://totp/$JUMPHOST:$JUMPUSER%20$JUMPPASS%20`date +%Y-%m-%d`?secret=
 echo "JUMPUSER: $JUMPUSER"
 echo "JUMPPASS: $JUMPPASS"
 echo "JUMPTOTP: $JUMPTOTP"
+if [ -n "${JUMPKEY:-}" ]; then
+ mkdir -p /home/$JUMPUSER/.ssh/
+ echo "$JUMPKEY" > /home/$JUMPUSER/.ssh/authorized_keys
+ chmod -R go= /home/$JUMPUSER/.ssh/
+ chown -R $JUMPUSER /home/$JUMPUSER/.ssh/
+ echo "JUMPKEY: $JUMPKEY"
+fi
 echo "First TOTP code: `oathtool --base32 $JUMPTOTP --totp`"
 echo "QR code URL: $QRURL"
-qrencode -t ANSI256 "$QRURL"
+qrencode -t UTF8 "$QRURL"
 
 /etc/init.d/sshd checkconfig
 echo "$JUMPUSER:$JUMPPASS" | chpasswd
