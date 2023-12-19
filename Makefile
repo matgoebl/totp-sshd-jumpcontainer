@@ -2,6 +2,7 @@ IMAGE=$(shell basename $(PWD))
 export BUILDTAG:=$(shell date +%Y%m%d.%H%M%S)
 
 # only for testing!
+# export JUMPHOST=jumpcontainer
 # export JUMPUSER=jumper
 # export JUMPPASS=123
 # export JUMPTOTP=LT2MSLFXAW7YT4Z65RVCAO2VFU
@@ -17,8 +18,11 @@ image:
 	docker push $(DOCKER_REGISTRY)/$(IMAGE):latest
 
 imagerun:
-	docker build -t $(IMAGE) .
+	docker build --build-arg BUILDTAG=$(BUILDTAG) -t $(IMAGE) .
 	-docker stop $(IMAGE)
-	docker run -it -p 2222:22 --name $(IMAGE) --rm -e JUMPUSER=$(JUMPUSER) -e JUMPPASS=$(JUMPPASS) -e JUMPTOTP=$(JUMPTOTP) -e JUMPKEY="$(JUMPKEY)" $(IMAGE)
+	docker run -it -p 2222:2222 --name $(IMAGE) --rm \
+	 -e JUMPHOST=$(JUMPHOST) -e JUMPUSER=$(JUMPUSER) -e JUMPPASS=$(JUMPPASS) \
+	 -e JUMPTOTP=$(JUMPTOTP) -e JUMPKEY="$(JUMPKEY)" -e BUILDTAG=$(BUILDTAG) \
+	 $(IMAGE)
 
 .PHONY: all image imagerun
