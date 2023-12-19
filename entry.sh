@@ -25,8 +25,6 @@ fi
 (cat /user/etc/passwd | grep -v "^[^:]*:[^:]*:10001:"; echo "$JUMPUSER:x:10001:10001:Linux User,,,:/user:/bin/ash") >/user/etc/passwd.new; cat /user/etc/passwd.new > /user/etc/passwd
 (cat /user/etc/group  | grep -v "^[^:]*:[^:]*:10001:"; echo "$JUMPUSER:x:10001:") >/user/etc/group.new; cat /user/etc/group.new > /user/etc/group
 
-head -n 9999 /user/etc/passwd /user/etc/shadow /user/etc/group
-
 echo ---
 echo "BUILD: `cat /user/build`"
 echo "JUMPUSER: $JUMPUSER"

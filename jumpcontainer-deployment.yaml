@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: totp-sshd-jumpcontainer 
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: totp-sshd-jumpcontainer 
+  template:
+    metadata:
+      labels:
+        app: totp-sshd-jumpcontainer 
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10002
+      containers:
+        - name: totp-sshd-jumpcontainer
+          image: ghcr.io/matgoebl/totp-sshd-jumpcontainer:latest
+          # imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+              - ALL
+          ports:
+            - name: sshd
+              containerPort: 2222
+          env:
+            - name: JUMPHOST
+              value: "jumpcontainer"
+            - name: JUMPUSER
+              value: "jumper"
+            # - name: JUMPPASS
+            #   value: "123"
+            # - name: JUMPTOTP
+            #   value: "LT2MSLFXAW7YT4Z65RVCAO2VFU"
+            # - name: JUMPKEY
+            #   value: "ssh-rsa ABC...= user@laptop"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: totp-sshd-jumpcontainer 
+  namespace: default
+  labels:
+    app: totp-sshd-jumpcontainer 
+spec:
+  type: LoadBalancer
+  ports:
+    - name: sshd
+      protocol: TCP
+      port: 12345
+      targetPort: sshd
+  selector:
+    app: totp-sshd-jumpcontainer 
