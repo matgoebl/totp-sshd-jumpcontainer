@@ -40,7 +40,7 @@ Example startup output:
 ```
 ssh-keygen: generating new host keys: RSA ECDSA ED25519 
 ---
-BUILD: unknown
+BUILD: 20231219.204954
 JUMPUSER: jumper
 JUMPPASS: 123
 JUMPTOTP: LT2MSLFXAW7YT4Z65RVCAO2VFU

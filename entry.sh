@@ -21,7 +21,7 @@ fi
 # echo "$JUMPUSER:$JUMPPASS" | chpasswd
 # This is a replacement:
 
-(cat /user/etc/shadow | grep -v "^$JUMPUSER:"; echo "$JUMPUSER:`mkpasswd \"$JUMPPASS\"`:19710:0:99999:7:::") >/user/etc/shadow.new; cat /user/etc/shadow.new > /user/etc/shadow
+(cat /user/etc/shadow | grep -v "^jumpuser:"; echo "$JUMPUSER:`mkpasswd \"$JUMPPASS\"`:19710:0:99999:7:::") >/user/etc/shadow.new; cat /user/etc/shadow.new > /user/etc/shadow
 (cat /user/etc/passwd | grep -v "^[^:]*:[^:]*:10001:"; echo "$JUMPUSER:x:10001:10001:Linux User,,,:/user:/bin/ash") >/user/etc/passwd.new; cat /user/etc/passwd.new > /user/etc/passwd
 (cat /user/etc/group  | grep -v "^[^:]*:[^:]*:10001:"; echo "$JUMPUSER:x:10001:") >/user/etc/group.new; cat /user/etc/group.new > /user/etc/group
 
