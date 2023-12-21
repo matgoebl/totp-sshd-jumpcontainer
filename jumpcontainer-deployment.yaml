@@ -2,17 +2,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: totp-sshd-jumpcontainer 
+  name: jumpcontainer
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: totp-sshd-jumpcontainer 
+      app: jumpcontainer
   template:
     metadata:
       labels:
-        app: totp-sshd-jumpcontainer 
+        app: jumpcontainer
     spec:
       automountServiceAccountToken: false
       securityContext:
@@ -20,7 +20,7 @@ spec:
         runAsGroup: 10001
         fsGroup: 10002
       containers:
-        - name: totp-sshd-jumpcontainer
+        - name: jumpcontainer
           image: ghcr.io/matgoebl/totp-sshd-jumpcontainer:latest
           # imagePullPolicy: Always
           securityContext:
@@ -41,19 +41,25 @@ spec:
             - name: JUMPUSER
               value: "jumper"
             # - name: JUMPPASS
-            #   value: "123"
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jumpcontainer-secrets
+            #       key: jumppass
             # - name: JUMPTOTP
-            #   value: "LT2MSLFXAW7YT4Z65RVCAO2VFU"
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: jumpcontainer-secrets
+            #       key: jumptotp
             # - name: JUMPKEY
             #   value: "ssh-rsa ABC...= user@laptop"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: totp-sshd-jumpcontainer 
+  name: jumpcontainer
   namespace: default
   labels:
-    app: totp-sshd-jumpcontainer 
+    app: jumpcontainer
 spec:
   type: LoadBalancer
   ports:
@@ -62,4 +68,41 @@ spec:
       port: 12345
       targetPort: sshd
   selector:
-    app: totp-sshd-jumpcontainer 
+    app: jumpcontainer
+---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: jumpcontainer-policy
+#   namespace: default
+#   labels:
+#     app: jumpcontainer
+# spec:
+#   podSelector:
+#     matchLabels:
+#       app: jumpcontainer
+#   policyTypes:
+#     - Ingress
+#     - Egress
+#   ingress:
+#   - ports:
+#     - port: 2222
+#   egress:
+#     - to:
+#         - ipBlock:
+#             cidr: 10.10.10.10/32  # your target host to jump to
+#       ports:
+#         - protocol: TCP
+#           port: 22
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: jumpcontainer-secrets
+#   namespace: default
+#   labels:
+#     app: jumpcontainer
+# immutable: true
+# stringData:
+#   jumppass: "123"
+#   jumptotp: "LT2MSLFXAW7YT4Z65RVCAO2VFU"
