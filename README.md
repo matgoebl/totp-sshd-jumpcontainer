@@ -75,7 +75,14 @@ Server listening on 0.0.0.0 port 2222.
 ```
 
 ## Security
-It runs as non-root user 10001, so it it satisfies
+
+Be aware that this solution is probably less secure than a real jump-host in real DMZ.
+
+Make sure that you isolate the container from the rest of your network, e.g. using
+[Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+as shown in [jumpcontainer-deployment.yaml](jumpcontainer-deployment.yaml).
+
+The container runs as non-root user 10001, so it it satisfies
 [kubesec's requirement RUNASUSER>10000](https://kubesec.io/basics/containers-securitycontext-runasuser/)
 and allows to maintain a [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/)
 level of [restricted](https://kubernetes.io/docs/concepts/security/pod-security-standards/#restricted).
