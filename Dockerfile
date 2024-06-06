@@ -5,6 +5,8 @@ COPY sshd_config /user/etc/ssh/sshd_config
 COPY sshd.pam /etc/pam.d/sshd.pam
 COPY entry.sh /entry.sh
 RUN ln -sf /etc/pam.d/sshd.pam /etc/pam.d/sshd && \
+    sed -e 's/grace_period=[0-9]*/grace_period=60/' < /etc/pam.d/sshd.pam > /etc/pam.d/sshd.pam.new && \
+    mv /etc/pam.d/sshd.pam.new /etc/pam.d/sshd.pam && \
     adduser -D -u 10001 jumpuser && \
     mkdir -p /user/.ssh/ /user/etc/ssh/ && \
     mv /etc/passwd /user/etc/passwd && ln -s /user/etc/passwd /etc/passwd && \

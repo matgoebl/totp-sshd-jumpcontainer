@@ -32,7 +32,7 @@ echo "JUMPPASS: $JUMPPASS"
 echo "JUMPTOTP: $JUMPTOTP"
 if [ -n "${JUMPKEY:-}" ]; then
  mkdir -p /user/.ssh/
- echo "$JUMPKEY" > /user/.ssh/authorized_keys
+ echo "$JUMPKEY" | tr ';' '\n' > /user/.ssh/authorized_keys
  chmod -R go= /user/.ssh/
  chown -R $JUMPUSER /user/.ssh/
  echo "JUMPKEY: $JUMPKEY"
